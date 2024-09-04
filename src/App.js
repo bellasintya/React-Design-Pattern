@@ -1,74 +1,48 @@
-import { NumberedList } from "./NumberedList";
-import { LargePersonListItem } from "./people/LargePersonListItem";
-import { SmallPersonListItem } from "./people/SmallPersonListItem";
-import { LargeProductListItem } from "./product/LargeProductListItem";
-import { SmallProductListItem } from "./product/SmallProductListItem";
-import { Modal } from "./Modal";
-import { RegularList } from "./RegularList";
+import axios from "axios";
+import { CurrentUserLoader } from "./CurrentUserLoader";
+import { DataSource } from "./DataSource";
+import { ProductInfo } from "./ProductInfo";
+import { ResourceLoader } from "./ResourceLoader";
+import { UserInfo } from "./UserInfo";
+import { UserLoader } from "./UserLoader";
 
-const people = [{
-	name: 'John Doe',
-	age: 54,
-	hairColor: 'brown',
-	hobbies: ['swimming', 'bicycling', 'video games'],
-}, {
-	name: 'Brenda Smith',
-	age: 33,
-	hairColor: 'black',
-	hobbies: ['golf', 'mathematics'],
-}, {
-	name: 'Jane Garcia',
-	age: 27,
-	hairColor: 'blonde',
-	hobbies: ['biology', 'medicine', 'gymnastics'],
-}];
+const getServerData = url => async () => {
+	const response = await axios.get(url);
+	return response.data;
+}
 
-const products = [{
-	name: 'Flat-Screen TV',
-	price: '$300',
-	description: 'Huge LCD screen, a great deal',
-	rating: 4.5,
-}, {
-	name: 'Basketball',
-	price: '$10',
-	description: 'Just like the pros use',
-	rating: 3.8,
-}, {
-	name: 'Running Shoes',
-	price: '$120',
-	description: 'State-of-the-art technology for optimum running',
-	rating: 4.2,
-}];
+const getLocalStorageData = key => () => {
+	return localStorage.getItem(key);
+}
+
+const Text = ({ message }) => <h1>{message}</h1>;
 
 function App() {
 	return (
-    <>
-      	{/* <RegularList
-          items={people}
-          resourceName="person"
-          itemComponent={SmallPersonListItem} 
-        />
-        <NumberedList
-          items={people}
-          resourceName="person"
-          itemComponent={LargePersonListItem} 
-        />
-		<RegularList
-          items={products}
-          resourceName="product"
-          itemComponent={SmallProductListItem} 
-        />
-		 <NumberedList
-          items={products}
-          resourceName="product"
-          itemComponent={LargeProductListItem} 
-        /> */}
+		// <CurrentUserLoader>
+		// 	<UserInfo />
+		// </CurrentUserLoader>
 
-		<Modal>
-			<LargeProductListItem product={products[0]} />
-		</Modal>
-    </>
-	);
+		// <UserLoader userId="234">
+		// 	<UserInfo />
+		// </UserLoader>
+
+		// <ResourceLoader resourceUrl="/users/123" resourceName="user">
+		// 	<UserInfo />
+		// </ResourceLoader>
+		// <ResourceLoader resourceUrl="/products/1234" resourceName="product">
+		// 	<ProductInfo />
+		// </ResourceLoader> 
+
+		<>
+			<DataSource getDataFunc={getServerData('/users/123')} resourceName="user">
+				<UserInfo />
+			</DataSource>
+			<DataSource getDataFunc={getLocalStorageData('message')} resourceName="message">
+				<Text />
+			</DataSource>
+		</>
+	)
 }
 
 export default App;
