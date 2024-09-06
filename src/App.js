@@ -1,47 +1,74 @@
-import axios from "axios";
-import { CurrentUserLoader } from "./CurrentUserLoader";
-import { DataSource } from "./DataSource";
-import { ProductInfo } from "./ProductInfo";
-import { ResourceLoader } from "./ResourceLoader";
-import { UserInfo } from "./UserInfo";
-import { UserLoader } from "./UserLoader";
+import { useState } from "react";
+import { ControlledForm } from "./ControlledForm";
+import { ControlledModal } from "./ControlledModal";
+import { UncontrolledForm } from "./UncontrolledForm";
+import { UncontrolledModal } from "./UncontrolledModal";
+import { UncontrolledOnboardingFlow } from "./UncontrolledOnboardingFlow";
+import { ControlledOnboardingFlow } from "./ControlledOnboardingFlow";
 
-const getServerData = url => async () => {
-	const response = await axios.get(url);
-	return response.data;
-}
+const StepOne = ({ goToNext }) => (
+	<>
+		<h1>Step 1</h1>
+		<button onClick={() => goToNext({ name: 'Garph Doe' })}>Next</button>
+	</>
+);
+const StepTwo = ({ goToNext }) => (
+	<>
+		<h1>Step 2</h1>
+		<button onClick={() => goToNext({ age: 100 })}>Next</button>
+	</>
+);
+const StepThree = ({ goToNext }) => (
+	<>
+		<h1>Step 3</h1>
+		<p>Congratulations! You qualify for our senior discount</p>
+		<button  onClick={() => goToNext({})}>Next</button>
+	</>
+);
+const StepFour = ({ goToNext }) => (
+	<>
+		<h1>Step 4</h1>
+		<button  onClick={() => goToNext({ hairColor: 'White' })}>Next</button>
+	</>
+);
 
-const getLocalStorageData = key => () => {
-	return localStorage.getItem(key);
-}
-
-const Text = ({ message }) => <h1>{message}</h1>;
 
 function App() {
+	// const [shouldShowModal, setShouldShowModal] = useState(false)
+
+    const [onboardingData, setOnboardingData] = useState({});
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+	const onNext = stepData => {
+		setOnboardingData({ ...onboardingData, ...stepData });
+		setCurrentIndex(currentIndex + 1)
+	}
+	
 	return (
-		// <CurrentUserLoader>
-		// 	<UserInfo />
-		// </CurrentUserLoader>
+		// <UncontrolledForm />
+		// <ControlledForm />
 
-		// <UserLoader userId="234">
-		// 	<UserInfo />
-		// </UserLoader>
+		// <>
+		// 	<ControlledModal 
+		// 		shouldShow={shouldShowModal}
+		// 		onRequestClose={() => { setShouldShowModal(false)}}
+		// 	>
+		// 		<h1>Hello!</h1>
+		// 	</ControlledModal>
+		// 	<button onClick={() => setShouldShowModal(!shouldShowModal)}>
+		// 		{shouldShowModal ? 'Hide Modal' : 'Show Modal'}
+		// 	</button>
+		// </>
 
-		// <ResourceLoader resourceUrl="/users/123" resourceName="user">
-		// 	<UserInfo />
-		// </ResourceLoader>
-		// <ResourceLoader resourceUrl="/products/1234" resourceName="product">
-		// 	<ProductInfo />
-		// </ResourceLoader> 
-
-		<>
-			<DataSource getDataFunc={getServerData('/users/123')} resourceName="user">
-				<UserInfo />
-			</DataSource>
-			<DataSource getDataFunc={getLocalStorageData('message')} resourceName="message">
-				<Text />
-			</DataSource>
-		</>
+		<ControlledOnboardingFlow 
+			currentIndex={currentIndex}
+			onNext={onNext}
+		>
+			<StepOne />
+			<StepTwo />
+			{onboardingData.age >= 63 && <StepThree />}
+			<StepFour />
+		</ControlledOnboardingFlow>
 	)
 }
 
