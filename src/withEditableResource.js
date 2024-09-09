@@ -14,10 +14,11 @@ export const withEditableResource = (Component, resourcePath, resourceName) => {
                 setOriginalData(response.data);
                 setData(response.data);
             })();
+            
         }, []);
 
         const onChange = changes => {
-            setData({ ...data, changes });
+            setData({ ...data, ...changes });
         }
 
         const onSave = async () => {
@@ -26,7 +27,7 @@ export const withEditableResource = (Component, resourcePath, resourceName) => {
             setData(response.data);
         }
 
-        const onReset = () => {
+        const onReset = () => {    
             setData(originalData);
         }
 
@@ -40,8 +41,3 @@ export const withEditableResource = (Component, resourcePath, resourceName) => {
         return <Component {...props} {...resourceProps} />
     }
 }
-
-// withEditableResource(
-//     withEditableResource(Homepage, 'products'),
-//     'users', 
-// )
