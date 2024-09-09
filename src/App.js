@@ -1,19 +1,12 @@
-import { printProps } from "./printProps";
+import { ProductInfo } from "./ProductInfo";
 import { UserInfo } from "./UserInfo";
-import { UserInfoForm } from "./UserInfoForm";
-import { withUser } from "./withUser";
-
-
-const UserInfoWrapped = printProps(UserInfo);
-const UserInfoWithLoader = withUser(UserInfo, '234');
 
 function App() {
 	return (
-		// <UserInfoWrapped a={1} b="Hello" c={{ name: "シュン" }} />
-
-    // <UserInfoWithLoader />
-
-    <UserInfoForm />
+		<>
+			<UserInfo userId="123" />
+			<ProductInfo productId="1234" />
+		</>
 	);
 }
 
